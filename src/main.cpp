@@ -63,32 +63,32 @@ void test() {
 }
 
 void PrintMenu() {
-    const int padding = 4;
-    const int maxOptionWidth = []() {
-        int m = 0;
-        for (auto &s: options) m = max(m, (int) s.length());
+    const unsigned long long padding = 4;
+    const unsigned long long maxOptionWidth = []() {
+        unsigned long long m = 0;
+        for (auto &s: options) m = max(m, s.length());
         return m;
     }();
-    const int maxItemWidth = (int) to_string(options.size()).size();
+    const unsigned long long maxItemWidth = to_string(options.size()).size();
 
-    const int width = max(maxOptionWidth, (int) title.length()) + maxItemWidth + padding * 2 + 2;
+    const unsigned long long width = max(maxOptionWidth, title.length()) + maxItemWidth + padding * 2 + 2;
 
     cout << string(width, '=') << endl
-         << setw((width - (int) title.length()) / 2) << setfill(' ') << ""
+         << setw((int) (width - title.length()) / 2) << setfill(' ') << ""
          << "\033[31m" << title << "\033[0m" << endl
-         << setw((width - (int) menu.length()) / 2) << setfill(' ') << ""
+         << setw((int) (width - menu.length()) / 2) << setfill(' ') << ""
          << menu << endl
          << string(width, '-') << endl;
 
 
-    for (int i = 0; i < (int) options.size(); i++)
+    for (unsigned long long i = 0; i < options.size(); i++)
         cout << setw(padding) << setfill(' ') << ""
-             << setw(maxItemWidth) << setfill(' ') << i << ": "
+             << setw((int) maxItemWidth) << setfill(' ') << i << ": "
              << options[i] << endl;
     cout << string(width, '=') << endl;
 }
 void SelectMenu() {
-    int opt = -1;
+    unsigned long long opt = options.size() + 1;
     do {
         system("cls");
         PrintMenu();
@@ -98,10 +98,10 @@ void SelectMenu() {
 
         cout << "Please select a option: ";
         cin >> opt;
-        if (opt < 0 || opt > (int) options.size()) {
+        if (opt > options.size()) {
             //            cout << "Invalid option, please try again: ";
             continue;
-        } else if (opt == (int) options.size() - 1)
+        } else if (opt == options.size() - 1)
             break;
 
         cout << endl;
@@ -205,13 +205,13 @@ void MatrixInfo() {
                 maxDistance = m;
 
     // matrix width
-    int matrixWidth = (int) to_string(maxDistance).length();
+    unsigned long long matrixWidth = to_string(maxDistance).length();
 
     cout << endl
          << "Map Matrix info:" << endl;
     for (auto &n: g.matrix) {
         for (auto &m: n)
-            cout << setw(matrixWidth) << setfill(' ') << m << " ";
+            cout << setw((int) matrixWidth) << setfill(' ') << m << " ";
         cout << endl;
     }
 }
@@ -239,14 +239,12 @@ void GetAllPath() {
     sort(PathDistance.begin(), PathDistance.end(), [](const pair<int, vector<Edge>> &a, const pair<int, vector<Edge>> &b) {
         return a.first < b.first;
     });
-    for (auto &p: PathDistance) {
-        auto path = p.second;
-        for (int i = 0; i < (int) path.size(); i++) {
-            cout << path[i].from->name << " -> ";
-            if (i == (int) path.size() - 1)
-                cout << path[i].to->name << " : " << p.first;
-        }
-        cout << endl;
+    for (unsigned long long i = 0; i < PathDistance.size(); i++) {
+        cout << "Path " << i + 1 << ": ";
+        for (auto &edge: PathDistance[i].second)
+            cout << edge.from->name << " -> ";
+        cout << PathDistance[i].second.back().to->name
+             << " Distance: " << PathDistance[i].first << endl;
     }
 }
 void GetShortestPath() {
@@ -271,14 +269,14 @@ void GetShortestPath() {
             "Johnson",
     };
 
-    for (int i = 0; i < (int) algorithm.size(); i++) {
+    for (unsigned long long i = 0; i < algorithm.size(); i++) {
         // right align
         cout << setw(2) << setfill(' ') << i << ". "
              << algorithm[i] << endl;
     }
 
-    int opt = -1;
-    while (cin >> opt, opt < 0 || opt > (int) algorithm.size() - 1)
+    unsigned long long opt = algorithm.size() + 1;
+    while (cin >> opt, opt > algorithm.size() - 1)
         ;
     vector<Edge> result;
     switch (opt) {
@@ -321,11 +319,11 @@ void GetShortestPath() {
 
     // print result
     int distance = 0;
-    for (int i = 0; i < (int) result.size(); i++) {
+    for (unsigned long long i = 0; i < result.size(); i++) {
         auto edge = result[i];
         cout << edge.from->name << " -> ";
         distance += edge.distance;
-        if (i == (int) result.size() - 1)
+        if (i == result.size() - 1)
             cout << edge.to->name << " : " << distance << endl;
     }
 }

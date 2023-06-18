@@ -263,20 +263,20 @@ vector<Edge> Graph::SearchPathFloyd(const string &from, const string &to) {
         return {};
 
     // floyd
-    vector<vector<int>> dist(node.size(), vector<int>(node.size(), INT_MAX));
-    vector<vector<int>> path(node.size(), vector<int>(node.size(), -1));
+    vector<vector<unsigned long long>> dist(node.size(), vector<unsigned long long>(node.size(), INT_MAX));
+    vector<vector<unsigned long long>> path(node.size(), vector<unsigned long long>(node.size(), 0));
     for (auto &e: edge) {
         dist[e.from->id][e.to->id] = e.distance;
-        path[e.from->id][e.to->id] = (int) e.from->id;
+        path[e.from->id][e.to->id] = e.from->id;
     }
-    for (int i = 0; i < (int) node.size(); ++i) {
+    for (unsigned long long i = 0; i < node.size(); ++i) {
         dist[i][i] = 0;
         path[i][i] = i;
     }
 
-    for (int k = 0; k < (int) node.size(); ++k) {
-        for (int i = 0; i < (int) node.size(); ++i) {
-            for (int j = 0; j < (int) node.size(); ++j) {
+    for (unsigned long long k = 0; k < node.size(); ++k) {
+        for (unsigned long long i = 0; i < node.size(); ++i) {
+            for (unsigned long long j = 0; j < node.size(); ++j) {
                 if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX && dist[i][k] + dist[k][j] < dist[i][j]) {
                     dist[i][j] = dist[i][k] + dist[k][j];
                     path[i][j] = path[k][j];
@@ -288,7 +288,7 @@ vector<Edge> Graph::SearchPathFloyd(const string &from, const string &to) {
     vector<Edge> path2;
     auto dst = t->id;
     while (dst != f->id) {
-        if (path[f->id][dst] == -1)
+        if (path[f->id][dst] == 0)
             return {};
         path2.push_back(*GetEdge(GetNode(path[f->id][dst])->name, GetNode(dst)->name));
         dst = path[f->id][dst];
@@ -302,7 +302,7 @@ vector<Edge> Graph::SearchPathAStar(const string &from, const string &to) {
     if (f == nullptr || t == nullptr)
         return {};
 
-    // astar
+    // AStar
     vector<int> dist(node.size(), INT_MAX);
     vector<bool> visited(node.size(), false);
     vector<Edge> path;
@@ -513,7 +513,7 @@ vector<Edge> Graph::SearchPathBellmanFord(const string &from, const string &to) 
 
     dist[f->id] = 0;
 
-    for (int i = 0; i < (int) node.size(); ++i) {
+    for (unsigned long long i = 0; i < node.size(); ++i) {
         for (auto &e: edge) {
             if (dist[e.from->id] != INT_MAX && dist[e.from->id] + e.distance < dist[e.to->id]) {
                 dist[e.to->id] = dist[e.from->id] + e.distance;
@@ -543,8 +543,8 @@ vector<Edge> Graph::SearchPathSPFA(const string &from, const string &to) {
     if (f == nullptr || t == nullptr)
         return {};
 
-    // spfa
-    vector<int> dist(node.size(), INT_MAX);
+    // SPFA
+    vector<unsigned long long> dist(node.size(), INT_MAX);
     vector<bool> visited(node.size(), false);
     vector<Edge> path;
     queue<Node *> q;
@@ -560,7 +560,7 @@ vector<Edge> Graph::SearchPathSPFA(const string &from, const string &to) {
 
         for (auto &e: edge) {
             if (e.from == n) {
-                int newDist = dist[n->id] + e.distance;
+                unsigned long long newDist = dist[n->id] + e.distance;
                 if (newDist < dist[e.to->id]) {
                     dist[e.to->id] = newDist;
                     path.push_back(e);
@@ -595,7 +595,7 @@ vector<Edge> Graph::SearchPathJohnson(const string &from, const string &to) {
         return {};
 
     // johnson
-    vector<int> dist(node.size(), INT_MAX);
+    vector<unsigned long long> dist(node.size(), INT_MAX);
     vector<bool> visited(node.size(), false);
     vector<Edge> path;
     priority_queue<pair<int, Node *>, vector<pair<int, Node *>>, greater<>> pq;
@@ -614,7 +614,7 @@ vector<Edge> Graph::SearchPathJohnson(const string &from, const string &to) {
 
         for (auto &e: edge) {
             if (e.from == n) {
-                int newDist = dist[n->id] + e.distance;
+                unsigned long long newDist = dist[n->id] + e.distance;
                 if (newDist < dist[e.to->id]) {
                     dist[e.to->id] = newDist;
                     pq.emplace(newDist + GetMatrix(e.to->name, t->name), e.to);

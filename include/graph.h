@@ -1,3 +1,5 @@
+#include <string>
+#include <vector>
 using namespace std;
 
 class Node {
@@ -9,6 +11,10 @@ public:
     Node(unsigned long long id, const string &name) {
         this->id = id;
         this->name = name;
+    }
+
+    bool operator==(const Node &node) const {
+        return this->id == node.id && this->name == node.name;
     }
 };
 
@@ -25,6 +31,11 @@ public:
         this->from = &from;
         this->to = &to;
         this->distance = distance;
+    }
+
+    // reload operator == for find
+    bool operator==(const Edge &edge) const {
+        return this->id == edge.id && this->from == edge.from && this->to == edge.to && this->distance == edge.distance;
     }
 };
 class Graph {
