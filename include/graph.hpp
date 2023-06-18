@@ -50,17 +50,18 @@ void Graph::DeleteNode(const string &name) {
     if (n == nullptr)
         return;
 
-    for (auto it = edge.begin(); it != edge.end();) {
-        if (it->from == n || it->to == n)
-            it = edge.erase(it);
-        else
-            it++;
+    // delete related edges first
+    for (auto &e: edge) {
+        if (e.from == n || e.to == n)
+            DeleteEdge(e.from->name, e.to->name);
     }
-    for (auto it = node.begin(); it != node.end();) {
-        if (&(*it) == n)
-            it = node.erase(it);
-        else
-            it++;
+
+    // delete node
+    for (auto it = node.begin(); it != node.end(); it++) {
+        if (it->name == name) {
+            node.erase(it);
+            break;
+        }
     }
 }
 void Graph::SetNode(const string &name, const string &newName) {
@@ -104,12 +105,13 @@ void Graph::DeleteEdge(const string &from, const string &to) {
     if (e == nullptr)
         return;
 
-    for (auto it = edge.begin(); it != edge.end();) {
-        if (&(*it) == e) {
-            it = edge.erase(it);
-            SetMatrix(e->from->id, e->to->id, -1);
-        } else
-            it++;
+    // delete edge
+    for (auto it = edge.begin(); it != edge.end(); it++) {
+        if (it->from == e->from && it->to == e->to) {
+            SetMatrix(e->from->id, e->to->id, 0);
+            edge.erase(it);
+            break;
+        }
     }
 }
 void Graph::SetEdge(const string &from, const string &to, int distance) {
