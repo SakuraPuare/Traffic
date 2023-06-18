@@ -12,5 +12,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 include_directories(include)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_directories(${PROJECT_NAME} PUBLIC)
+add_subdirectory(src)
+add_subdirectory(test)
+add_subdirectory(lib/googletest)
